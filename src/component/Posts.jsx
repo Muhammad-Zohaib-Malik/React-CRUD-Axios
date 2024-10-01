@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { deletePost, getPost } from '../api/PostApi'
 import Card from './Card'
+import Form from './Form'
 
 const Posts = () => {
   const [data, setData] = useState([])
@@ -9,38 +10,41 @@ const Posts = () => {
     setData(res.data)
   }
 
- const handleDeletePost=async(id)=>{
-  try {
-    const res=await deletePost(id)
-    if(res.status===200)
-    {
-      const newUpdatedPosts=data?.filter((currPost)=>{
-        return currPost.id!==id
-      })
-      setData(newUpdatedPosts)
+  const handleDeletePost = async (id) => {
+    try {
+      const res = await deletePost(id)
+      if (res.status === 200) {
+        const newUpdatedPosts = data?.filter((currPost) => {
+          return currPost.id !== id
+        })
+        setData(newUpdatedPosts)
+      }
+      else {
+        console.log("failed To deleted the post", res.status)
+      }
+      console.log(res)
+    } catch (error) {
+      console.log(error)
+
     }
-    else{
-      console.log("failed To deleted the post",res.status)
-    }
-    console.log(res)
-  } catch (error) {
-    console.log(error)
-    
+
   }
 
-}
- 
-  
+
 
   useEffect(() => {
     getPostData()
   }, [])
   return (
     <div>
+
+      <Form data={data} setData={setData}/>
+
+
       <ul className='grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 '>
         {
           data?.map((currElem) => (
-            <Card key={currElem?.id}  id={currElem?.id}   title={currElem?.title} body={currElem?.body} onDelete={handleDeletePost} />
+            <Card key={currElem?.id} id={currElem?.id} title={currElem?.title} body={currElem?.body} onDelete={handleDeletePost} />
 
           ))
         }
